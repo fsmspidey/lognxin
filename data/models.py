@@ -11,7 +11,7 @@ class Load(models.Model):
 	import_date = models.DateTimeField(default=datetime.datetime.now)
 	import_date_finish = models.DateTimeField(null=True)
 	log_format = models.ForeignKey(LogFormat, on_delete=models.CASCADE)
-	tag = models.CharField(max_length=250)
+	tag = models.CharField(max_length=250, null=True, blank=True)
 	site = models.ForeignKey(Site, on_delete=models.CASCADE)
 	def __str__(self):
 		return self.log
