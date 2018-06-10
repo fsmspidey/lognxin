@@ -81,6 +81,8 @@ def process_line(line, logFormat):
     data.save()
 
 if args.format:
+    logFormat = LogFormat.objects.all()
+    print logFormat
     logFormat = LogFormat.objects.get(name=args.format)
     print logFormat.name
 
