@@ -19,5 +19,9 @@ from . import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+<<<<<<< Updated upstream
     url(r'', views.current_datetime),
+=======
+    url("", views.index)
+>>>>>>> Stashed changes
 ]
