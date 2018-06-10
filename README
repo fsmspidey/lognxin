@@ -1,2 +1,4 @@
+IN PROGRESS
 python manage.py migrate
 python manage.py createsuperuser
+python manage.py loaddata fixtures/log.json --app log.log
