@@ -83,6 +83,11 @@ DATABASES = {
     }
 }
 
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+FIXTURE_DIRS = (
+   os.path.join(PROJECT_DIR, 'fixtures'),
+)
+
 SITE_ID = 1
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
