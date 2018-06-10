@@ -3,5 +3,11 @@
 	</head>
 	<body>
 		<h1>GENERIC WEBLOG ANALYSER</h1>
+
+		<ul>
+			{% for site in site_list %}
+    		<li>{{ site.name }}</li>
+			{% endfor %}
+		</ul>
 	</body>
 </html>
