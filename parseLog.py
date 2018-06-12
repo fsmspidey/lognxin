@@ -10,8 +10,10 @@ if __name__ == "__main__":
         django.setup()        
         from log.functions import process_import
         from log.models import LogFormat
-        from data.models import Load
+        from data.models import Load, Data
         import argparse
+        from django.db.models import Count
+        from report.models import HitReport
     except ImportError:
         raise ImportError(
               "Couldn't import Models and Django. Are you sure it's installed and "
@@ -20,16 +22,19 @@ if __name__ == "__main__":
         )
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-l","--logfile", type=str)
-parser.add_argument("-f","--format", type=str)
-parser.add_argument("-t","--tag", type=str)
+parser.add_argument("-l",   "--logfile" , type=str)
+parser.add_argument("-f",   "--format"  , type=str)
+parser.add_argument("-t",   "--tag"     , type=str)
 args = parser.parse_args()
 
+#from django.db.models import Count
+''' hits '''
+qs = Data.objects.filter(load__pk=21).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'))
+print qs
+'''
 if args.format and args.logfile:
     logFormat = LogFormat.objects.all()
     logFormat = LogFormat.objects.get(name=args.format)
     load = process_import(args,logFormat)
-        
-    if load: 
-        print "sucesso"
+'''        
     
