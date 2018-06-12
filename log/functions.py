@@ -2,7 +2,10 @@ import re
 from log.models import LogFormat, LogField
 from data.models import Load, Data
 from django.utils import timezone
-from datetime import *
+from datetime import datetime
+from django.conf import settings
+from django.contrib.sites.models import Site
+from log.models import LogFormat
 import pytz
 
 def process_line(line, logFormat, load):
@@ -26,7 +29,6 @@ def process_line(line, logFormat, load):
                 data.url_field_protocol=value.split(' ')[2]                
             return data
 
-        '''' setup the field's values '''
         value = fields[log_field.position]
         if log_field.field.type == 2:
             value = datetime.strptime(fields[log_field.position], logFormat.date_format) 
@@ -42,3 +44,34 @@ def process_line(line, logFormat, load):
     for log_field in log_fields:
         process_field(log_field)
     data.save()
+
+def process_import(args,logFormat):
+    print "Importing - Format: "+ logFormat.name
+    with open(args.logfile) as f:
+            lines = f.readlines()
+
+    now = datetime.now()
+    tz = pytz.timezone(settings.TIME_ZONE)
+    now = tz.localize(now, is_dst=True)
+
+    site = Site.objects.get(domain='example.com')
+    load = Load(log=args.logfile, log_format=logFormat, site=site, tag=args.tag, import_date=now)
+    load.save()
+    
+    if load.pk>0:
+        total_lines = len(lines)
+        line_completed=0
+        for line in lines:
+            process_line(line.rstrip('\n'), logFormat, load)
+            line_completed = line_completed + 1
+            print str(float((line_completed*100)/total_lines)) + "% completed"
+
+    now = datetime.now()
+    tz = pytz.timezone(settings.TIME_ZONE)
+    now = tz.localize(now, is_dst=True)
+    load.import_date_finish = now
+    load.save(update_fields=['import_date_finish'])
+
+    if load.pk>0 and line_completed>0:
+        return load
+    return False
