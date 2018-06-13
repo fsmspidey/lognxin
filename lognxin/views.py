@@ -1,3 +1,4 @@
+#https://docs.djangoproject.com/en/1.7/topics/templates/
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.sites.models import Site

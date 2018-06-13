@@ -20,6 +20,7 @@ class Data(models.Model):
 	load = models.ForeignKey(Load, on_delete=models.CASCADE)
 	host_field = models.CharField(max_length=255, null=True)
 	status_field = models.PositiveIntegerField(null=True)
+	size_field = models.PositiveIntegerField(null=True)
 	date_field = models.DateTimeField(null=True)
 	url_field = models.CharField(max_length=255, null=True)
 	url_field_method = models.CharField(max_length=10, null=True)

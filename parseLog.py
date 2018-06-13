@@ -29,7 +29,7 @@ args = parser.parse_args()
 
 #from django.db.models import Count
 ''' hits '''
-qs = Data.objects.filter(load__pk=21).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'))
+qs = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'))
 print qs
 '''
 if args.format and args.logfile:

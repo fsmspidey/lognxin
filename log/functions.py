@@ -21,7 +21,13 @@ def process_line(line, logFormat, load):
 
             if "status" in (log_field.field.name).lower():
                 data.status_field=value
-        
+
+            if "size" in (log_field.field.name).lower():
+                try:
+                    data.size_field=int(value)
+                except:
+                    data.size_field=0
+
             if "url" in (log_field.field.name).lower():
                 data.url_field=value
                 data.url_field_method=value.split(' ')[0]
@@ -32,7 +38,7 @@ def process_line(line, logFormat, load):
         value = fields[log_field.position]
         if log_field.field.type == 2:
             value = datetime.strptime(fields[log_field.position], logFormat.date_format) 
-            tz = pytz.timezone('UTC')
+            tz = pytz.timezone(settings.TIME_ZONE)
             value = tz.localize(value, is_dst=True)
         update_data(data)
 
@@ -64,7 +70,7 @@ def process_import(args,logFormat):
         for line in lines:
             process_line(line.rstrip('\n'), logFormat, load)
             line_completed = line_completed + 1
-            print str(float((line_completed*100)/total_lines)) + "% completed"
+            print str(round(float(line_completed*100)/total_lines,2)) + "% completed"
 
     now = datetime.now()
     tz = pytz.timezone(settings.TIME_ZONE)
