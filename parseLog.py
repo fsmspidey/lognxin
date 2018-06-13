@@ -12,7 +12,7 @@ if __name__ == "__main__":
         from log.models import LogFormat
         from data.models import Load, Data
         import argparse
-        from django.db.models import Count
+        from django.db.models import Count,Sum
         from report.models import HitReport
     except ImportError:
         raise ImportError(
@@ -29,8 +29,12 @@ args = parser.parse_args()
 
 #from django.db.models import Count
 ''' hits '''
-qs = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'))
+print "hits & bytes"
+qs = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
 print qs
+
+
+
 '''
 if args.format and args.logfile:
     logFormat = LogFormat.objects.all()
