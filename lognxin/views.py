@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.sites.models import Site
 from log.models import LogFormat
+from report.models import HitSizeReport
+from django.db.models import Count,Sum
 
 def index(request):
 	sites = Site.objects.all()
@@ -12,4 +14,13 @@ def index(request):
 
 def report(request,site,format):
 	print site
-	return render(request, 'report/index.html')
+
+ 	#Data.objects.filter(load__pk=22).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
+
+	site = Site.objects.get(domain=site)
+	hit_size_report = HitSizeReport.objects.filter(load__site=site)\
+						.extra( select={"d": 'strftime("%%Y-%%m-%%d",report_hitsizereport.date_time)'} ).values('d')\
+						.annotate(hits=Sum('count'), traffic=Sum('size')/1024).order_by('-d')[:50]
+	#print hit_size_report.query
+	#print hit_size_report
+	return render(request, 'report/index.html', { 'hit_size_report_list': hit_size_report })

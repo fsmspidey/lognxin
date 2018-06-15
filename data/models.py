@@ -10,7 +10,7 @@ class Load(models.Model):
 	log = models.CharField(max_length=250)
 	import_date = models.DateTimeField(default=datetime.datetime.now)
 	import_date_finish = models.DateTimeField(null=True)
-	log_format = models.ForeignKey(LogFormat, on_delete=models.CASCADE)
+	log_format = models.ForeignKey(LogFormat, on_delete=models.CASCADE, default='([(\d\.)]+) - - \[(.*?)\] "(.*?)" (\d+) (.*?) "(.*?)" "(.*?)"')
 	tag = models.CharField(max_length=250, null=True, blank=True)
 	site = models.ForeignKey(Site, on_delete=models.CASCADE)
 	def __str__(self):

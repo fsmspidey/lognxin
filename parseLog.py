@@ -30,10 +30,11 @@ args = parser.parse_args()
 
 #from django.db.models import Count
 ''' hits '''
-print "hits & bytes"
-qs = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
 
-load = Load.objects.get(pk=79)
+print "hits & bytes"
+qs = Data.objects.filter(load__pk=22).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
+
+load = Load.objects.get(pk=22)
 for data in qs:
     print data
     hit_size_report = HitSizeReport(load=load,date_time=data['d']+":00:00+0000",count=data['load__count'],size=data['size_field__sum'])
