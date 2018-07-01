@@ -11,7 +11,7 @@ if __name__ == "__main__":
         from log.functions import process_import
         from log.models import LogFormat
         from data.models import Load, Data
-        from report.models import HitSizeReport
+        from report.models import HitSizeReport, StatusCodeReport
         import argparse
         from django.db.models import Count,Sum
         
@@ -32,13 +32,21 @@ args = parser.parse_args()
 ''' hits '''
 
 print "hits & bytes"
-qs = Data.objects.filter(load__pk=22).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
+qs = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
 
-load = Load.objects.get(pk=22)
+print "Status Code report"
+qs2 = Data.objects.filter(load__pk=79).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d','status_field').annotate(Count('load'))
+
+load = Load.objects.get(pk=79)
 for data in qs:
-    print data
+    #print data
     hit_size_report = HitSizeReport(load=load,date_time=data['d']+":00:00+0000",count=data['load__count'],size=data['size_field__sum'])
-    hit_size_report.save()
+    #hit_size_report.save()
+
+for data in qs2:
+    print data
+    status_code_report = StatusCodeReport(load=load,date_time=data['d']+":00:00+0000",count=data['load__count'],status_code=data['status_field'])
+    #status_code_report.save()
 
 
 

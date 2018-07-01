@@ -10,3 +10,8 @@ class HitSizeReport(models.Model):
 	count		= models.PositiveIntegerField()
 	size		= models.PositiveIntegerField()
 
+class StatusCodeReport(models.Model):
+	load 		= models.ForeignKey(Load, on_delete=models.CASCADE)
+	date_time 	= models.DateTimeField()
+	count		= models.PositiveIntegerField()
+	status_code		= models.PositiveIntegerField()
