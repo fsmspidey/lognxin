@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}GENERIC WEBLOG ANALYSER {% endblock %}
+{% block content %}
+		
+<h2>Traffic report</h2>
+<canvas id="trafficChart" width="800" height="200"></canvas>
+
+<h2>Status Code report</h2>
+<canvas id="statusCodeChart" width="400" height="200"></canvas>
+
+<script>
+
+var ctxTraffic = document.getElementById("trafficChart");
+var myChart = new Chart(ctxTraffic, {
+type: 'line',
+  data: {
+    datasets: [
+    	{
+          label: 'Traffic (GB)',
+          backgroundColor: 'rgba(80, 10, 0, 0.8)',
+          data: [{% for hit_size_report in hit_size_report_list %} "{{ hit_size_report.traffic }}", {% endfor %}]
+        },
+		{
+          label: 'hits',
+          backgroundColor: 'rgba(10, 80, 0, 0.8)',
+          data: [{% for hit_size_report in hit_size_report_list %} "{{ hit_size_report.hits }}", {% endfor %}]
+        }
+        ],
+    labels: [{% for hit_size_report in hit_size_report_list %} "{{ hit_size_report.d }}", {% endfor %} ],
+
+  },
+ });
+
+var ctxStatusCode = document.getElementById("statusCodeChart");
+var myChart = new Chart(ctxStatusCode, {
+type: 'pie',
+data: {
+		datasets: [
+					{
+        			data: [{% for status_code_report in status_code_report_list %} {{ status_code_report.hits }}, {% endfor %} ],
+        			backgroundColor: ['rgba(0, 0, 100, 0.8)','rgba(0, 100, 0, 0.8)','rgba(80, 60, 19, 0.8)','rgba(10, 00, 20, 0.8)','rgba(10, 80, 99, 0.8)']
+    			  }
+    			  ],
+     	labels:   [ {% for status_code_report in status_code_report_list %} "{{ status_code_report.status_code }}", {% endfor %}  ],
+
+	},
+});
+
+	</script>
+
+{% endblock %}

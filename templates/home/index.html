@@ -1,13 +1,14 @@
-<html title="LOGNXIN - GENERIC WEBLOG ANALYSER">
-	<head>
-	</head>
-	<body>
-		<h1>GENERIC WEBLOG ANALYSER</h1>
-
+{% extends "base.html" %}
+{% block title %}GENERIC WEBLOG ANALYSER {% endblock %}
+{% block content %}
 		<ul>
 			{% for site in site_list %}
     		<li>{{ site.name }}</li>
+    			<ul>
+    				{% for format in format_list %}
+    					<li><a href="/report/{{ site.name }}/{{ format.pk }}">{{ format.name }}</a></li>
+    				{% endfor %}		
+    			</ul>
 			{% endfor %}
 		</ul>
-	</body>
-</html>
+{% endblock %}
