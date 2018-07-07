@@ -6,6 +6,8 @@ from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.models import Site
 from log.models import LogFormat
+from django.db.models import Count,Sum
+from report.models import HitSizeReport, StatusCodeReport
 import pytz
 
 def process_line(line, logFormat, load):
@@ -50,6 +52,21 @@ def process_line(line, logFormat, load):
     for log_field in log_fields:
         process_field(log_field)
     data.save()
+
+
+def insert_load_traffic(load):
+    qs = Data.objects.filter(load = load).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d').annotate(Count('load'), Sum('size_field'))
+    for data in qs:
+        hit_size_report = HitSizeReport(load=load,date_time=data['d']+":00:00+0000",count=data['load__count'],size=data['size_field__sum'])
+        hit_size_report.save()
+
+
+def insert_load_code(load):
+    qs = Data.objects.filter(load = load).extra( select={"d": 'strftime("%%Y-%%m-%%d %%H",data_data.date_field)'} ).values('d','status_field').annotate(Count('load'))
+    for data in qs:
+        status_code_report = StatusCodeReport(load=load,date_time=data['d']+":00:00+0000",count=data['load__count'],status_code=data['status_field'])
+        status_code_report.save()
+    
 
 def process_import(args,logFormat):
     print "Importing - Format: "+ logFormat.name
